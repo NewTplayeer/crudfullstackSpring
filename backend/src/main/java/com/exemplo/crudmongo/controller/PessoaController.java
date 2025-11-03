@@ -6,91 +6,67 @@ import com.exemplo.crudmongo.service.PessoaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid; 
 
 import java.util.List;
 
-/**
- * Controlador REST para gerenciar operações relacionadas à entidade Pessoa.
- */
-@RestController // Indica que esta classe é um controlador REST
-@RequestMapping("/pessoas") // Define o endpoint base para as requisições
-@CrossOrigin(origins = "*") // Permite requisições de qualquer origem (CORS)
+@RestController 
+@RequestMapping("/api/pessoas") 
+@CrossOrigin(origins = "*") 
 public class PessoaController {
 
-    private final PessoaService service; // Serviço responsável pela lógica de negócio
+    private final PessoaService service; 
 
-    /**
-     * Injeta o serviço PessoaService via construtor.
-     */
     public PessoaController(PessoaService service) {
         this.service = service;
     }
 
-    /**
-     * Retorna a lista de todas as pessoas cadastradas.
-     * Método acessível via GET em /pessoas
-     */
     @GetMapping
-    public List<Pessoa> listar() {
-        return service.listarTodas();
+    public List<Pessoa> listarPessoas() {
+        return service.listarTodos();
+    }
+    
+    @GetMapping("/{id}")
+    public Pessoa listarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
     }
 
-    @GetMapping("/buscarPorNome")
+    @GetMapping("/buscarNome")
     public List<Pessoa> listarPorNome(@RequestParam String nome) {
         return service.buscarPorNome(nome);
     }
 
-    @GetMapping("/buscarPorIdade")
+    @GetMapping("/buscarIdade")
     public List<Pessoa> listarPorIdade(@RequestParam int idade) {
-        return service.BuscarPorIdade(idade);
+        return service.buscarPorIdade(idade);
     }
 
-    @GetMapping("/buscarPorNomeEIdade")
-    public List<Pessoa> listarPorNomeEIdade(@RequestParam String nome, @RequestParam int idade) {
-        return service.buscarPorNomeEIdade(nome, idade);
+    @GetMapping("/buscarNomeIdade")
+    public List<Pessoa> listarPorNomeIdade(@RequestParam String nome, @RequestParam int idade) {
+        return service.buscarPorNomeIdade(nome, idade);
     }
 
-    @GetMapping("/{id}")
-    public Pessoa listarPorId(@PathVariable Long id) {
-        return service.listarPorId(id);
-    }
 
     @GetMapping("/pagina")
     public Page<Pessoa> listarPaginado(Pageable pageable) {
-        return service.listarTodasPaginado(pageable);
+        return service.listarTodosPaginado(pageable);
     }
 
-    /**
-     * Cria uma nova pessoa.
-     * Método acessível via POST em /pessoas
-     * @param pessoa Objeto Pessoa recebido no corpo da requisição
-     * @return Pessoa criada
-     */
     @PostMapping
-    public Pessoa criar(@RequestBody Pessoa pessoa) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Pessoa criarPessoa(@RequestBody @Valid Pessoa pessoa) {
         return service.salvar(pessoa);
     }
 
-    /**
-     * Atualiza uma pessoa existente pelo ID.
-     * Método acessível via PUT em /pessoas/{id}
-     * @param id Identificador da pessoa a ser atualizada
-     * @param pessoa Dados atualizados da pessoa
-     * @return Pessoa atualizada
-     */
     @PutMapping("/{id}")
-    public Pessoa atualizar(@PathVariable Long id, 
-    @RequestBody Pessoa pessoa) {
+    public Pessoa atualizarPessoa(@PathVariable Long id, @RequestBody @Valid Pessoa pessoa) {
         return service.atualizar(id, pessoa);
     }
 
-    /**
-     * Exclui uma pessoa pelo ID.
-     * Método acessível via DELETE em /pessoas/{id}
-     * @param id Identificador da pessoa a ser excluída
-     */
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirPessoa(@PathVariable Long id) {
         service.excluir(id);
     }
 }

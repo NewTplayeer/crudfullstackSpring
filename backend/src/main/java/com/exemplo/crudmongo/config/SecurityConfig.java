@@ -29,6 +29,7 @@ public class SecurityConfig {
                 "/h2-console/**",
                 "/error"
             ).permitAll()
+            .requestMatchers("/api/pessoas/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/cursos/**")
                 .hasAnyRole("ALUNO", "COORDENADOR")
             .requestMatchers(HttpMethod.POST, "/api/cursos/**")
@@ -55,7 +56,7 @@ public class SecurityConfig {
 
         UserDetails aluno = User.builder()
             .username("aluno")
-            .password(passwordEncoder.encode("alun123"))
+            .password(passwordEncoder.encode("aluno123"))
             .roles("ALUNO")
             .build();
 
