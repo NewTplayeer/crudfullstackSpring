@@ -31,6 +31,7 @@ public class PessoaController {
         return ResponseEntity.ok(pessoas);
     }
 
+    
     @GetMapping("/pesquisa")
     @PreAuthorize("hasAuthority('ROLE_COORDENADOR')")
     public ResponseEntity<Page<Pessoa>> pesquisar(
