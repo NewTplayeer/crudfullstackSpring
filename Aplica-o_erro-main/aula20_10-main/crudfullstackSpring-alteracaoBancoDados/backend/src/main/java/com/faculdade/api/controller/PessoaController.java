@@ -33,7 +33,7 @@ public class PessoaController {
 
     @GetMapping("/pesquisa")
     @PreAuthorize("hasAuthority('ROLE_COORDENADOR')")
-    public Page<Pessoa> pesquisar(
+    public ResponseEntity<Page<Pessoa>> pesquisar(
         @RequestParam(required = false) String nome,
         @RequestParam(required = false) String curso,
         @RequestParam(required = false) Integer idadeMin,
@@ -41,7 +41,8 @@ public class PessoaController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
     ) {
-        return service.pesquisar(nome, curso, idadeMin, idadeMax, page, size);
+        Page<Pessoa> pessoas = service.pesquisar(nome, curso, idadeMin, idadeMax, page, size);
+        return ResponseEntity.ok(pessoas);
     }
 
     @GetMapping("/relatorio")

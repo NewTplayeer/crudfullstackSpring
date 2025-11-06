@@ -38,10 +38,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authenticationProvider(authProvider()) // ✅ registra o provider
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/cursos/**").authenticated()
-                        .anyRequest().permitAll()
-                )
+                .authorizeHttpRequests(auth -> auth // Delega autorização para @PreAuthorize
+                        .anyRequest().authenticated() // Exige autenticação para qualquer requisição
+                ) 
                 .httpBasic(); // autenticação básica
         return http.build();
     }
